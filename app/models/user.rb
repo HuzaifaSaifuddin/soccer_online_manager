@@ -14,9 +14,14 @@ class User
 
   validates :password, presence: true,
                        length: { minimum: 8 },
-                       if: :new_record
+                       if: :new_record?
+
+  has_one :team
+  accepts_nested_attributes_for :team
+  # has_many :players
 
   before_save :encrypt_password
+  after_create :create_team
 
   def self.authenticate(email = '', login_password = '')
     return if email.nil? || login_password.nil?
@@ -37,5 +42,9 @@ class User
 
     self.salt = BCrypt::Engine.generate_salt
     self.encrypted_password = BCrypt::Engine.hash_secret(password, salt)
+  end
+
+  def create_team
+    CreateTeam.call(self)
   end
 end

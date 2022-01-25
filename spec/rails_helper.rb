@@ -26,8 +26,12 @@ RSpec.configure do |config|
   # Remove this line to enable support for ActiveRecord
   config.use_active_record = false
 
+  config.before(:suite) do
+    Rails.application.load_seed
+  end
+
   config.before(:each) do
-    DatabaseCleaner[:mongoid].strategy = [:deletion]
+    DatabaseCleaner[:mongoid].strategy = [:deletion, except: ['countries']]
     DatabaseCleaner.start
   end
 
