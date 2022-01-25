@@ -18,6 +18,18 @@ class User
 
   before_save :encrypt_password
 
+  def self.authenticate(email = '', login_password = '')
+    return if email.nil? || login_password.nil?
+
+    user = User.find_by(email: email)
+
+    user if user.present? && user.match_password(login_password)
+  end
+
+  def match_password(login_password = '')
+    encrypted_password == BCrypt::Engine.hash_secret(login_password, salt)
+  end
+
   private
 
   def encrypt_password
