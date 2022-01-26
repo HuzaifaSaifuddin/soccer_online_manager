@@ -1,6 +1,7 @@
 class Player
   include Mongoid::Document
   include Mongoid::Timestamps
+  include ValidateCountry
 
   field :first_name, type: String
   field :last_name, type: String
@@ -19,6 +20,8 @@ class Player
   validates :age, inclusion: { in: (18..40).to_a, message: 'should be between 18 to 40' }
   validates :position, inclusion: { in: %w[goalkeeper defender midfielder attacker],
                                     message: 'should be goalkeepers, defenders, midfielders or attackers' }
+
+  after_validation :validate_country_code
 
   def full_name
     "#{first_name} #{last_name}"

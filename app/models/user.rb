@@ -18,7 +18,6 @@ class User
 
   has_one :team
   accepts_nested_attributes_for :team
-  # has_many :players
 
   before_save :encrypt_password
   after_create :create_team
