@@ -1,4 +1,5 @@
 require 'rails_helper'
+require './spec/concerns/validate_country_spec.rb'
 
 RSpec.describe Team, type: :model do
   # pending "add some examples to (or delete) #{__FILE__}"
@@ -28,4 +29,6 @@ RSpec.describe Team, type: :model do
       expect(team.value).to eq(5000000.0)
     end
   end
+
+  it_behaves_like 'validate_country'
 end

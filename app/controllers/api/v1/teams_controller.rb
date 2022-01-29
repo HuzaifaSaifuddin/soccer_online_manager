@@ -3,20 +3,20 @@ class Api::V1::TeamsController < ApplicationController
   before_action :set_team
 
   def index
-    @players = @team.players.includes(:country)
+    @players = @team.players.includes(:country).where(transfer: false)
 
     render status: :ok
   end
 
   def update
-    if @team&.id.to_s == params[:id]
+    if owner?
       if @team.update(team_params)
         head :accepted
       else
         render json: { errors: @team.errors.full_messages }, status: :unprocessable_entity
       end
     else
-      render json: { errors: ['No Team found'] }, status: :unprocessable_entity
+      render json: { errors: ['Only owner can update their team'] }, status: :unprocessable_entity
     end
   end
 
@@ -28,5 +28,11 @@ class Api::V1::TeamsController < ApplicationController
 
   def set_team
     @team = @user.team
+
+    render json: { errors: ['No Team found'] }, status: :unprocessable_entity if @team.nil?
+  end
+
+  def owner?
+    @team&.id.to_s == params[:id]
   end
 end

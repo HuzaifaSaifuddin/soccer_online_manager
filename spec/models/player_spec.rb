@@ -1,4 +1,5 @@
 require 'rails_helper'
+require './spec/concerns/validate_country_spec.rb'
 
 RSpec.describe Player, type: :model do
   # pending "add some examples to (or delete) #{__FILE__}"
@@ -36,6 +37,18 @@ RSpec.describe Player, type: :model do
     it 'is invalid if position is not either of goalkeeper defender midfielder attacker' do
       expect(build_stubbed(:player, position: 'random')).to be_invalid
     end
+
+    it 'is invalid if market_value is less than 1000000' do
+      expect(build_stubbed(:player, market_value: 10)).to be_invalid
+    end
+
+    it 'is invalid if player is on transfer & transfer_value is 0 or less' do
+      expect(build_stubbed(:player, transfer: true, transfer_value: 0)).to be_invalid
+    end
+
+    it 'is invalid if player is not on transfer & transfer_value is greater than 0' do
+      expect(build_stubbed(:player, transfer: false, transfer_value: 10)).to be_invalid
+    end
   end
 
   describe 'full_name' do
@@ -45,4 +58,6 @@ RSpec.describe Player, type: :model do
       expect(player.full_name).to eq("#{player.first_name} #{player.last_name}")
     end
   end
+
+  it_behaves_like 'validate_country'
 end

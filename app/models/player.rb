@@ -8,7 +8,7 @@ class Player
   field :age, type: Integer
 
   field :position, type: String
-  field :market_value, type: Float, default: 1000000
+  field :market_value, type: Float, default: 1_000_000.0
 
   field :transfer, type: Boolean, default: false
   field :transfer_value, type: Float, default: 0.0
@@ -21,7 +21,13 @@ class Player
   validates :position, inclusion: { in: %w[goalkeeper defender midfielder attacker],
                                     message: 'should be goalkeepers, defenders, midfielders or attackers' }
 
-  after_validation :validate_country_code
+  # This will change if in future the player's default market value changes.
+  validates_numericality_of :market_value, greater_than_or_equal_to: 1_000_000.0
+
+  validates_numericality_of :transfer_value, greater_than: 0.0, if: :transfer
+  validates_numericality_of :transfer_value, equal_to: 0.0, unless: :transfer
+
+  after_validation :validate_country_code, if: :country_id_changed?
 
   def full_name
     "#{first_name} #{last_name}"

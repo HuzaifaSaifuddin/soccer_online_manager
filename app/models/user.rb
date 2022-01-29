@@ -12,6 +12,7 @@ class User
                     uniqueness: { case_sensitive: false },
                     format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
+  # /\A(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=]).{8,}\z/
   validates :password, presence: true,
                        length: { minimum: 8 },
                        if: :new_record?
